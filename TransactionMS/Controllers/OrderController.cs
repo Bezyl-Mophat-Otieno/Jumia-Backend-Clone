@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TransactionMS.Data;
@@ -32,12 +33,24 @@ namespace TransactionMS.Controllers
         }
 
         [HttpPost]
+        [Authorize]
 
         public async Task<ActionResult<ResponseDTO>> CreateOrder(CreateOrderDTO neworder)
         {
 
+            var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+
+            if (!isAuthenticated)
+            {
+                _response.ErrorMessage = "User Must be Authenticated";
+                return BadRequest(_response);
+
+            }
             var mappedOrder = _mapper.Map<Order>(neworder);
 
+            var userId = Guid.Parse(User?.Claims.ToList().First().Value);
+
+            mappedOrder.UserId = userId;
             var res = await _orderservice.CreateOrder(mappedOrder);
 
             if (!string.IsNullOrEmpty(res))
