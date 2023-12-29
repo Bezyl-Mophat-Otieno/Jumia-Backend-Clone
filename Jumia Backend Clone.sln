@@ -5,11 +5,13 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthMS", "AuthMS\AuthMS.csproj", "{7DB200D3-BFD1-4CA8-9F77-BDD374537DDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductMS", "ProductMS\ProductMS.csproj", "{09E41B02-F338-468A-9C9C-BB784A257284}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductMS", "ProductMS\ProductMS.csproj", "{09E41B02-F338-468A-9C9C-BB784A257284}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailMS", "EmailMS\EmailMS.csproj", "{E83D0CAE-03BE-4676-8B35-F90D16BD7C4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailMS", "EmailMS\EmailMS.csproj", "{E83D0CAE-03BE-4676-8B35-F90D16BD7C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JumiaAzureServiceBus", "JumiaAzureServiceBus\JumiaAzureServiceBus.csproj", "{8B63E2F8-A255-41C9-83B7-BD36C0D2E785}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumiaAzureServiceBus", "JumiaAzureServiceBus\JumiaAzureServiceBus.csproj", "{8B63E2F8-A255-41C9-83B7-BD36C0D2E785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionMS", "TransactionMS\TransactionMS.csproj", "{10B236D2-1D68-4217-9CE7-F723ADC63A05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8B63E2F8-A255-41C9-83B7-BD36C0D2E785}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B63E2F8-A255-41C9-83B7-BD36C0D2E785}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B63E2F8-A255-41C9-83B7-BD36C0D2E785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
