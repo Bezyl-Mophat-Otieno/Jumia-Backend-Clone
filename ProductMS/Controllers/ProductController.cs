@@ -29,7 +29,7 @@ namespace ProductMS.Controllers
 
 
         [HttpPost("add")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
 
 
 
@@ -75,7 +75,7 @@ namespace ProductMS.Controllers
 
 
         [HttpPut("update/{Id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
 
 
 
@@ -130,7 +130,7 @@ namespace ProductMS.Controllers
 
 
         [HttpDelete("{Id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<ResponseDTO>> DeleteProduct(Guid  Id)
         {

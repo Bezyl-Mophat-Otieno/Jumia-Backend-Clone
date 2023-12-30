@@ -19,16 +19,23 @@ namespace TransactionMS.Controllers
 
         private readonly IOrder _orderservice;
 
+        private readonly IProduct _productservice;
+
+
+        private readonly ISales _saleservice;
+
         private readonly ResponseDTO _response;
 
         private readonly IMapper _mapper;
 
-        public OrderController(ApplicationDBContext context, IMapper mapper , IOrder orderservice)
+        public OrderController(ApplicationDBContext context, IMapper mapper , IOrder orderservice , IProduct productservice , ISales saleservice)
         {
             _context = context;
             _mapper = mapper;
             _response = new ResponseDTO();
             _orderservice = orderservice;
+            _productservice = productservice;
+            _saleservice = saleservice;
 
         }
 
@@ -47,6 +54,22 @@ namespace TransactionMS.Controllers
 
             }
             var mappedOrder = _mapper.Map<Order>(neworder);
+
+            // Update the products stock quantity 
+
+            foreach (var product in mappedOrder.Products)
+            {
+
+
+                var existingproduct = await _productservice.GetProductById(product.ProductId);
+                existingproduct.Quantity = existingproduct.Quantity - product.Quantity;
+
+
+                await _productservice.UpdateProduct(product.ProductId, existingproduct);
+
+
+            }
+
 
             var userId = Guid.Parse(User?.Claims.ToList().First().Value);
 
@@ -119,7 +142,91 @@ namespace TransactionMS.Controllers
 
         return Ok(_response);
     }
+
+        [HttpGet("product/{Id}")]
+
+        public async Task<ActionResult<ResponseDTO>> GetProduct(Guid Id)
+        {
+            var product = await _productservice.GetProductById(Id);
+
+            if(product == null)
+            {
+                _response.ErrorMessage = "Product Not Found";
+                return NotFound(_response);
+            }
+
+            _response.Result = product;
+
+            return Ok(_response);
     }
 
+
+        [HttpPut("updateproduct/{Id}")]
+
+        public async Task<ActionResult<ResponseDTO>> UpdateProduct(Guid Id , ProductDTO updatedproduct)
+        {
+
+            var response = await _productservice.UpdateProduct(Id, updatedproduct);
+
+            if (string.IsNullOrEmpty(response))
+            {
+                _response.Result = "Updated Successfully";
+                return Ok(_response);
+            }
+            _response.ErrorMessage = "Failed to update";
+            return StatusCode(500 , _response);
+        }
+
+
+        [HttpGet("productstobesod/{OrderId}")]
+
+        public async Task<ActionResult<ResponseDTO>> GetProductsToBeSold(Guid OrderId)
+        {
+
+            var order = await _orderservice.GetOrderById(OrderId);
+
+            if (order == null)
+            {
+                _response.ErrorMessage = "Order Not Found";
+                
+            }
+
+            var products = order.Products.ToList();
+
+            var productstobesold = await _productservice.ProductsToBeSold(products);
+
+            if(productstobesold != null) {
+
+
+                _response.Result = productstobesold;
+                return Ok(_response);
+
+            }
+
+            _response.ErrorMessage = "Products Not Found";
+            return StatusCode(500, _response);
+
+        }
+
+        [HttpPost("purchase/{Id}")]
+
+        public async Task<ActionResult<ResponseDTO>> MakeSell(Guid Id)
+        {
+
+            var res =  await _saleservice.CreateSale(Id);
+
+            if(res != string.Empty)
+            {
+                _response.ErrorMessage = "Something went wrong the Purchase wasn't processed";
+
+                return BadRequest(_response);
+            }
+
+            _response.Result = "Product Purchase was successfull";
+            return Ok(_response);
+
+
+        }
+    }
 
 }

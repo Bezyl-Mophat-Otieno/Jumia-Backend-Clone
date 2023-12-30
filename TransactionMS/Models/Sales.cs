@@ -4,25 +4,19 @@ using TransactionMS.Data.Dtos;
 
 namespace TransactionMS.Models
 {
-    public class Order
+    public class Sales
     {
         public Guid Id { get; set; }
 
         [Required]
-        public Guid UserId { get; set; }
+        public List<ProductSales> Products { get; set; }
 
+        [ForeignKey("OrderId")]
         [Required]
-        public List<OrderProductDTO> Products { get; set; }
-
+        public Guid OrderId { get; set; }
+        public Order Order { get; set; }
         [Required]
-
-        public DateTime Created { get; set; } = DateTime.Now;
-
-        public Sales Sales { get; set; }
-
-
-     
-
-
+        public double TotalCost {  get; set; }
+        
     }
 }

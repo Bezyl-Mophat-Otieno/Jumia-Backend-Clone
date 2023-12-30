@@ -10,6 +10,8 @@ namespace TransactionMS.Profiles
         {
             CreateMap<CreateOrderDTO , Order>().ReverseMap();
             CreateMap<Order ,OrderComprehensiveDTO>().ReverseMap();
+            CreateMap<MakeSaleDTO ,Sales>().ReverseMap();
+            CreateMap<ProductSales, ProductDTO>().ReverseMap();
         }
     }
 }

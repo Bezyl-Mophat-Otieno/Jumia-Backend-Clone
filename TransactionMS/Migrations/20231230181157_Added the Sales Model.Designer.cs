@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransactionMS.Data;
 
@@ -11,9 +12,11 @@ using TransactionMS.Data;
 namespace TransactionMS.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231230181157_Added the Sales Model")]
+    partial class AddedtheSalesModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,24 +47,7 @@ namespace TransactionMS.Migrations
                     b.ToTable("OrderProductDTO");
                 });
 
-            modelBuilder.Entity("TransactionMS.Models.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("TransactionMS.Models.ProductSales", b =>
+            modelBuilder.Entity("TransactionMS.Data.Dtos.ProductDTO", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,14 +67,31 @@ namespace TransactionMS.Migrations
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SalesId")
+                    b.Property<Guid?>("SalesId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SalesId");
 
-                    b.ToTable("ProductSales");
+                    b.ToTable("ProductDTO");
+                });
+
+            modelBuilder.Entity("TransactionMS.Models.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TransactionMS.Models.Sales", b =>
@@ -118,15 +121,11 @@ namespace TransactionMS.Migrations
                         .HasForeignKey("OrderId");
                 });
 
-            modelBuilder.Entity("TransactionMS.Models.ProductSales", b =>
+            modelBuilder.Entity("TransactionMS.Data.Dtos.ProductDTO", b =>
                 {
-                    b.HasOne("TransactionMS.Models.Sales", "Sales")
+                    b.HasOne("TransactionMS.Models.Sales", null)
                         .WithMany("Products")
-                        .HasForeignKey("SalesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sales");
+                        .HasForeignKey("SalesId");
                 });
 
             modelBuilder.Entity("TransactionMS.Models.Sales", b =>

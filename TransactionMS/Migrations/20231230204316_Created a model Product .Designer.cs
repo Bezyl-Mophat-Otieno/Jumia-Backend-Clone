@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransactionMS.Data;
 
@@ -11,9 +12,11 @@ using TransactionMS.Data;
 namespace TransactionMS.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231230204316_Created a model Product ")]
+    partial class CreatedamodelProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace TransactionMS.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("TransactionMS.Models.ProductSales", b =>
+            modelBuilder.Entity("TransactionMS.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -88,7 +91,7 @@ namespace TransactionMS.Migrations
 
                     b.HasIndex("SalesId");
 
-                    b.ToTable("ProductSales");
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("TransactionMS.Models.Sales", b =>
@@ -118,7 +121,7 @@ namespace TransactionMS.Migrations
                         .HasForeignKey("OrderId");
                 });
 
-            modelBuilder.Entity("TransactionMS.Models.ProductSales", b =>
+            modelBuilder.Entity("TransactionMS.Models.Product", b =>
                 {
                     b.HasOne("TransactionMS.Models.Sales", "Sales")
                         .WithMany("Products")

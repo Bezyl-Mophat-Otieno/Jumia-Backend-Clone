@@ -10,5 +10,7 @@ namespace TransactionMS.Data
 
         public DbSet<Order> Orders { get; set; }
 
+        public DbSet<Sales> Sales { get; set; }
+
     }
 }
