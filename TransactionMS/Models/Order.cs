@@ -12,7 +12,7 @@ namespace TransactionMS.Models
         public Guid UserId { get; set; }
 
         [Required]
-        public List<OrderProductDTO> Products { get; set; }
+        public List<ProductsOrder> Products { get; set; }
 
         [Required]
 

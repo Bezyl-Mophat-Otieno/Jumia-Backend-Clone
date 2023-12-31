@@ -15,7 +15,7 @@ namespace TransactionMS.Services
             _httpClientFactory = httpClientFactory;
             
         }
-        public async Task<ProductDTO> GetProductById(Guid Id)
+        public async Task<ProductOrderDTO> GetProductById(Guid Id)
         {
             try { 
                 var client = _httpClientFactory.CreateClient("Products");
@@ -26,7 +26,7 @@ namespace TransactionMS.Services
 
                 if(responseDto.Result != null && response.IsSuccessStatusCode)
                 {
-                    return JsonConvert.DeserializeObject<ProductDTO>(responseDto.Result.ToString());
+                    return JsonConvert.DeserializeObject<ProductOrderDTO>(responseDto.Result.ToString());
                 }
 
                 return null;
@@ -38,15 +38,17 @@ namespace TransactionMS.Services
             }
         }
 
-        public async Task<List<ProductDTO>> ProductsToBeSold(List<OrderProductDTO> OrderProducts)
+        public async Task<List<ProductOrderDTO>> ProductsToBeSold(List<ProductsOrder> OrderProducts, Guid userId)
         {
 
-            List<ProductDTO> productsToBesold = new List<ProductDTO>();
+            List<ProductOrderDTO> productsToBesold = new List<ProductOrderDTO>();
             
             foreach (var orderProduct in OrderProducts)
             {
 
                 var product = await GetProductById(orderProduct.ProductId);
+                product.Quantity = orderProduct.Quantity;
+                product.CustomerId = userId;
                 productsToBesold.Add(product);
             }
 
@@ -56,7 +58,7 @@ namespace TransactionMS.Services
 
         }
 
-        public async Task<string> UpdateProduct( Guid Id ,ProductDTO updatedproduct)
+        public async Task<string> UpdateProduct( Guid Id ,ProductOrderDTO updatedproduct)
         {
             try { 
 

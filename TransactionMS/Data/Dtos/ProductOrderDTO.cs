@@ -1,7 +1,8 @@
 ﻿namespace TransactionMS.Data.Dtos
 {
-    public class ProductDTO
+    public class ProductOrderDTO
     {
+        public Guid CustomerId { get; set; }
         public string Name { get; set; }
 
         public string Description { get; set; }

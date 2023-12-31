@@ -6,6 +6,6 @@ namespace TransactionMS.Data.Dtos
     {
         public Guid UserId { get; set; }
 
-        public List<OrderProductDTO> Products { get; set; }
+        public List<ProductsOrder> Products { get; set; }
     }
 }

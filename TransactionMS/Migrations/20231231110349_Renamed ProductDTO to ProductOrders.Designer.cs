@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransactionMS.Data;
 
@@ -11,9 +12,11 @@ using TransactionMS.Data;
 namespace TransactionMS.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20231231110349_Renamed ProductDTO to ProductOrders")]
+    partial class RenamedProductDTOtoProductOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace TransactionMS.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TransactionMS.Data.Dtos.ProductsOrder", b =>
+            modelBuilder.Entity("TransactionMS.Data.Dtos.OrderProductDTO", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +44,7 @@ namespace TransactionMS.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("ProductsOrder");
+                    b.ToTable("OrderProductDTO");
                 });
 
             modelBuilder.Entity("TransactionMS.Models.Order", b =>
@@ -65,9 +68,6 @@ namespace TransactionMS.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -100,14 +100,8 @@ namespace TransactionMS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ProcessedAT")
-                        .HasColumnType("datetime2");
 
                     b.Property<double>("TotalCost")
                         .HasColumnType("float");
@@ -120,7 +114,7 @@ namespace TransactionMS.Migrations
                     b.ToTable("Sales");
                 });
 
-            modelBuilder.Entity("TransactionMS.Data.Dtos.ProductsOrder", b =>
+            modelBuilder.Entity("TransactionMS.Data.Dtos.OrderProductDTO", b =>
                 {
                     b.HasOne("TransactionMS.Models.Order", null)
                         .WithMany("Products")

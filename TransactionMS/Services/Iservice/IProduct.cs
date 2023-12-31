@@ -4,10 +4,10 @@ namespace TransactionMS.Services.Iservice
 {
     public interface IProduct
     {
-        Task<ProductDTO> GetProductById(Guid Id);
+        Task<ProductOrderDTO> GetProductById(Guid Id);
 
-        Task<List<ProductDTO>> ProductsToBeSold(List<OrderProductDTO> OrderProducts);
-        Task<string>UpdateProduct(Guid Id,ProductDTO updatedproduct);
+        Task<List<ProductOrderDTO>> ProductsToBeSold(List<ProductsOrder> OrderProducts , Guid userId);
+        Task<string>UpdateProduct(Guid Id,ProductOrderDTO updatedproduct);
 
 
     }

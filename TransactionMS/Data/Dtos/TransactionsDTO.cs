@@ -4,11 +4,13 @@ using TransactionMS.Models;
 
 namespace TransactionMS.Data.Dtos
 {
-    public class MakeSaleDTO
+    public class TransactionsDTO
     {
-        public List<ProductOrderDTO> Products { get; set; }
 
+        public Guid Id { get; set; }
         public Guid OrderId { get; set; }
         public double TotalCost { get; set; }
+
+        public DateTime ProcessedAT { get; set; }
     }
 }

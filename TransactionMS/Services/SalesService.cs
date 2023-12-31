@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TransactionMS.Data;
 using TransactionMS.Data.Dtos;
 using TransactionMS.Models;
@@ -30,7 +31,7 @@ namespace TransactionMS.Services
 
 
 
-        public async Task<string> CreateSale(Guid OrderId)
+        public async Task<string> CreateSale(Guid OrderId , Guid userId)
         {
             try { 
 
@@ -45,7 +46,7 @@ namespace TransactionMS.Services
 
                 if (products.Count > 0)
                 {
-                    var productstobesold = await _productservice.ProductsToBeSold(products);
+                    var productstobesold = await _productservice.ProductsToBeSold(products , userId);
 
                     int? totalcost = 0;
 
@@ -63,6 +64,7 @@ namespace TransactionMS.Services
                     
 
                     var sales1 = new Sales(){ 
+                        CustomerId = userId,
                         OrderId = OrderId,
                         Products = mappedproductstobesold,
                         TotalCost = (double)totalcost
@@ -80,6 +82,28 @@ namespace TransactionMS.Services
             } catch(Exception ex)
             {
                 return ex.Message;
+            }
+        }
+
+        public async Task<List<TransactionsDTO>> CustomerTransactionHistory(Guid userId)
+        {
+            try {
+
+                var transactions = await _dbcontext.Sales.Where(sales => sales.CustomerId == userId).ToListAsync();
+
+                var mappedtransactions = _mapper.Map<List<TransactionsDTO>>(transactions);
+
+
+
+                if(mappedtransactions.Count > 0)
+                {
+                    return mappedtransactions;
+                }
+                return null;
+            
+            } catch (Exception ex) {
+
+                return null;
             }
         }
     }

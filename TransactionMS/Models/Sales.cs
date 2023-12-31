@@ -9,6 +9,10 @@ namespace TransactionMS.Models
         public Guid Id { get; set; }
 
         [Required]
+        public Guid CustomerId { get; set; }
+
+
+        [Required]
         public List<ProductSales> Products { get; set; }
 
         [ForeignKey("OrderId")]
@@ -17,6 +21,9 @@ namespace TransactionMS.Models
         public Order Order { get; set; }
         [Required]
         public double TotalCost {  get; set; }
-        
+
+        [Required]
+        public DateTime ProcessedAT { get; set; } = DateTime.Now;
+
     }
 }

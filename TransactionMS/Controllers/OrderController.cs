@@ -163,7 +163,7 @@ namespace TransactionMS.Controllers
 
         [HttpPut("updateproduct/{Id}")]
 
-        public async Task<ActionResult<ResponseDTO>> UpdateProduct(Guid Id , ProductDTO updatedproduct)
+        public async Task<ActionResult<ResponseDTO>> UpdateProduct(Guid Id , Data.Dtos.ProductOrderDTO updatedproduct)
         {
 
             var response = await _productservice.UpdateProduct(Id, updatedproduct);
@@ -178,10 +178,24 @@ namespace TransactionMS.Controllers
         }
 
 
-        [HttpGet("productstobesod/{OrderId}")]
+        [HttpGet("ordered-products/{OrderId}")]
+        [Authorize]
 
         public async Task<ActionResult<ResponseDTO>> GetProductsToBeSold(Guid OrderId)
         {
+
+            var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+
+            if (!isAuthenticated)
+            {
+                _response.ErrorMessage = "User Must be Authenticated";
+                return BadRequest(_response);
+
+            }
+
+            // Get the user Id
+
+            var userId = Guid.Parse(User?.Claims.ToList().First().Value);
 
             var order = await _orderservice.GetOrderById(OrderId);
 
@@ -191,9 +205,11 @@ namespace TransactionMS.Controllers
                 
             }
 
+
+
             var products = order.Products.ToList();
 
-            var productstobesold = await _productservice.ProductsToBeSold(products);
+            var productstobesold = await _productservice.ProductsToBeSold(products , userId);
 
             if(productstobesold != null) {
 
@@ -209,11 +225,26 @@ namespace TransactionMS.Controllers
         }
 
         [HttpPost("purchase/{Id}")]
+        [Authorize]
 
         public async Task<ActionResult<ResponseDTO>> MakeSell(Guid Id)
         {
 
-            var res =  await _saleservice.CreateSale(Id);
+            var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
+
+            if (!isAuthenticated)
+            {
+                _response.ErrorMessage = "User Must be Authenticated";
+                return BadRequest(_response);
+
+            }
+
+            // Get the user Id
+
+            var userId = Guid.Parse(User?.Claims.ToList().First().Value);
+
+
+            var res =  await _saleservice.CreateSale(Id , userId);
 
             if(res != string.Empty)
             {
@@ -225,6 +256,23 @@ namespace TransactionMS.Controllers
             _response.Result = "Product Purchase was successfull";
             return Ok(_response);
 
+
+        }
+
+
+        [HttpGet("transactionhistory/{userId}")]
+
+        public async Task<ActionResult<ResponseDTO>> CustomerTransactionHistory(Guid userId)
+        {
+
+            var transactions = await _saleservice.CustomerTransactionHistory(userId);
+
+            if(transactions == null)
+            {
+                _response.ErrorMessage = "Transaction History N/A";
+            }
+            _response.Result = transactions;
+            return Ok(_response);
 
         }
     }

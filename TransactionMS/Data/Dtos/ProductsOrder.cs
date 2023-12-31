@@ -2,7 +2,7 @@
 
 namespace TransactionMS.Data.Dtos
 {
-    public class OrderProductDTO
+    public class ProductsOrder
     {
 
         public Guid Id { get; set; }
