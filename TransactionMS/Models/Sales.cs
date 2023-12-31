@@ -20,7 +20,11 @@ namespace TransactionMS.Models
         public Guid OrderId { get; set; }
         public Order Order { get; set; }
         [Required]
-        public double TotalCost {  get; set; }
+        public decimal TotalCost {  get; set; }
+
+        public decimal Discount { get; set; } = 0;
+        
+        public string CouponCode { get; set; } = string.Empty;
 
         [Required]
         public DateTime ProcessedAT { get; set; } = DateTime.Now;

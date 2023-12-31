@@ -13,6 +13,8 @@ namespace TransactionMS.Profiles
             CreateMap<MakeSaleDTO ,Sales>().ReverseMap();
             CreateMap<ProductSales, Data.Dtos.ProductOrderDTO>().ReverseMap();
             CreateMap<Sales, TransactionsDTO>().ReverseMap();
+            CreateMap<Sales, UpdateSalesDTO>().ReverseMap();
+
         }
     }
 }

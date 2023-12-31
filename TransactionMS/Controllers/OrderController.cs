@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using Azure;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TransactionMS.Data;
+using TransactionMS.Data.Dto;
 using TransactionMS.Data.Dtos;
 using TransactionMS.Models;
 using TransactionMS.Services;
@@ -21,6 +20,7 @@ namespace TransactionMS.Controllers
 
         private readonly IProduct _productservice;
 
+        private readonly ICoupon _couponservice;
 
         private readonly ISales _saleservice;
 
@@ -28,7 +28,7 @@ namespace TransactionMS.Controllers
 
         private readonly IMapper _mapper;
 
-        public OrderController(ApplicationDBContext context, IMapper mapper , IOrder orderservice , IProduct productservice , ISales saleservice)
+        public OrderController(ApplicationDBContext context, IMapper mapper , IOrder orderservice , IProduct productservice , ISales saleservice , ICoupon couponservice)
         {
             _context = context;
             _mapper = mapper;
@@ -36,6 +36,7 @@ namespace TransactionMS.Controllers
             _orderservice = orderservice;
             _productservice = productservice;
             _saleservice = saleservice;
+            _couponservice = couponservice;
 
         }
 
@@ -224,10 +225,10 @@ namespace TransactionMS.Controllers
 
         }
 
-        [HttpPost("purchase/{Id}")]
+        [HttpPost("confirmorder/{Id}")]
         [Authorize]
 
-        public async Task<ActionResult<ResponseDTO>> MakeSell(Guid Id)
+        public async Task<ActionResult<ResponseDTO>> ConfirmOrder(Guid Id)
         {
 
             var isAuthenticated = User?.Identity?.IsAuthenticated ?? false;
@@ -244,16 +245,16 @@ namespace TransactionMS.Controllers
             var userId = Guid.Parse(User?.Claims.ToList().First().Value);
 
 
-            var res =  await _saleservice.CreateSale(Id , userId);
+            var res =  await _saleservice.ConfirmOrder(Id , userId);
 
             if(res != string.Empty)
             {
-                _response.ErrorMessage = "Something went wrong the Purchase wasn't processed";
+                _response.ErrorMessage = "Something went wrong the Order wasn't Confirmed";
 
                 return BadRequest(_response);
             }
 
-            _response.Result = "Product Purchase was successfull";
+            _response.Result = "The Order was  Confirmed was successfull";
             return Ok(_response);
 
 
@@ -272,6 +273,60 @@ namespace TransactionMS.Controllers
                 _response.ErrorMessage = "Transaction History N/A";
             }
             _response.Result = transactions;
+            return Ok(_response);
+
+        }
+
+        [HttpPut("applyingcoupon/{salesId}")]
+
+        public async Task<ActionResult<ResponseDTO>> ApplyCoupon(string code , Guid salesId)
+        {
+            // Get Coupon by code
+
+            var coupon =await _couponservice.GetCouponByCode(code);
+
+            if(coupon == null)
+            {
+                _response.ErrorMessage = "Coupon Code Does Not Exist";
+                return NotFound(_response);
+
+            }
+
+            // Update the ordertosold
+
+            var ordertobesold = await _saleservice.GetSaleById(salesId);
+
+
+            // Update the ordertobesold
+
+            if(ordertobesold == null)
+            {
+                _response.ErrorMessage = "Order to Sold (Sales) Not Found";
+                return NotFound(_response);
+
+            }
+
+            if (ordertobesold.TotalCost < coupon.CouponMinAmount)
+            {
+                _response.ErrorMessage = "You do not Qualify for a coupon at this time";
+                return BadRequest(_response);
+            }
+
+            ordertobesold.CouponCode = coupon.CouponCode;
+            ordertobesold.Discount = coupon.CouponAmount;
+
+            await _saleservice.UpdateSale();
+          return _response;
+
+
+        }
+
+        [HttpPost("purchase")]
+        public async Task<ActionResult<ResponseDTO>> Purchase(StripeRequestDTO striperequest)
+        {
+
+            var res = await _saleservice.OrderPurchase(striperequest);
+            _response.Result = res;
             return Ok(_response);
 
         }

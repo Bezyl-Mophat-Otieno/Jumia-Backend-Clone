@@ -20,11 +20,18 @@ builder.AddAuth();
 
 // Add HttpClient to aid in the Communication between our external service
 builder.Services.AddHttpClient("Products", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:productMS").Value));
+builder.Services.AddHttpClient("Coupons", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:couponMS").Value));
 builder.Services.AddHttpClient("ProductUpdate", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:productMSupdate").Value));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProduct, ProductService>();
 builder.Services.AddScoped<IOrder, OrderService>();
 builder.Services.AddScoped<ISales, SalesService>();
+builder.Services.AddScoped<ICoupon, Couponservice>();
+
+// Stripe Configuration
+
+Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:apikey").Value;
+
 
 
 // Add connection string 

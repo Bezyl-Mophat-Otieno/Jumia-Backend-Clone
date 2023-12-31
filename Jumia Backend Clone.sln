@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailMS", "EmailMS\EmailMS.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JumiaAzureServiceBus", "JumiaAzureServiceBus\JumiaAzureServiceBus.csproj", "{8B63E2F8-A255-41C9-83B7-BD36C0D2E785}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionMS", "TransactionMS\TransactionMS.csproj", "{10B236D2-1D68-4217-9CE7-F723ADC63A05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransactionMS", "TransactionMS\TransactionMS.csproj", "{10B236D2-1D68-4217-9CE7-F723ADC63A05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CouponMS", "CouponMS\CouponMS.csproj", "{3021AF37-960B-4782-9A0B-2ED537E01077}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10B236D2-1D68-4217-9CE7-F723ADC63A05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3021AF37-960B-4782-9A0B-2ED537E01077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3021AF37-960B-4782-9A0B-2ED537E01077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3021AF37-960B-4782-9A0B-2ED537E01077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3021AF37-960B-4782-9A0B-2ED537E01077}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
