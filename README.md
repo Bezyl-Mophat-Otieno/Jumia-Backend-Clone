@@ -84,8 +84,4 @@ The `JumiaAzureServiceBus` class library is responsible for managing communicati
 Here's the Link to the Documentation : https://documenter.getpostman.com/view/21431560/2s9YsDkueG
 
 ## License
-
-MIT License
-
-
-Feel free to expand each section with more details, add links to documentation, provide examples, or include any other pertinent information specific to your application and services.
+MIT License .
