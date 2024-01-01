@@ -14,13 +14,13 @@ namespace AuthMS.Controllers
         private readonly IUser _userservice;
         private readonly IMapper _mapper;
         private readonly ResponseDTO _response;
-        public AuthController(IUser userservice , IMapper mapper)
+        public AuthController(IUser userservice, IMapper mapper)
         {
             _userservice = userservice;
             _mapper = mapper;
             _response = new ResponseDTO();
 
-            
+
         }
 
 
@@ -77,6 +77,24 @@ namespace AuthMS.Controllers
             _response.ErrorMessage = "User failed to be assigned the Role";
             _response.Result = res;
             return BadRequest(_response);
+
+        }
+
+        [HttpGet("{Id}")]
+
+        public async Task<ActionResult<ResponseDTO>> GetUser(Guid Id)
+        {
+            var user = await _userservice.GetUserById(Id);
+
+            if(user == null)
+            {
+                _response.ErrorMessage = "Not Found";
+
+                return NotFound(_response);
+            }
+
+            _response.Result= user;
+            return Ok(_response);
 
         }
     }

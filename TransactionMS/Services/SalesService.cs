@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using JumiaAzureServiceBus;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Stripe.Checkout;
 using TransactionMS.Data;
 using TransactionMS.Data.Dto;
@@ -21,11 +23,15 @@ namespace TransactionMS.Services
 
         private readonly StripeRequestDTO _requestdto;
 
+        private readonly IMessageBus _messagebusservice;
+
+        private readonly IUser _userservice;
+
 
         private readonly IMapper _mapper;
 
 
-        public SalesService(IOrder orderservice , IProduct productservice , ApplicationDBContext dbcontext , IMapper mapper )
+        public SalesService(IOrder orderservice , IProduct productservice , ApplicationDBContext dbcontext , IMapper mapper , IMessageBus messagebusservice , IUser userservice)
         {
 
             _orderservice = orderservice;
@@ -34,6 +40,8 @@ namespace TransactionMS.Services
             _dbcontext = dbcontext;
             _mapper = mapper;
             _requestdto = new StripeRequestDTO();
+            _messagebusservice = messagebusservice;
+            _userservice = userservice;
             
         }
 
@@ -81,6 +89,7 @@ namespace TransactionMS.Services
                         Products = mappedproductstobesold,
                         TotalCost = (decimal)totalcost
                     };
+
 
 
                     await _dbcontext.Sales.AddAsync(sales1);
@@ -197,6 +206,12 @@ namespace TransactionMS.Services
                 _requestdto.StripeSessionUrl = session.Url;
                 _requestdto.StripeSessionId = session.Id;
 
+                // Update the Database Sales with the status and session Id .
+
+                sales1.StripeSessionId = session.Id;
+                sales1.Status = session.Status;
+                await _dbcontext.SaveChangesAsync();
+
                 return _requestdto;
 
 
@@ -213,6 +228,61 @@ namespace TransactionMS.Services
             await _dbcontext.SaveChangesAsync();
             return "";
             
+        }
+
+        public async Task<bool> VerifyPayments(Guid SalesId)
+        {
+            try { 
+                var sales = await GetSaleById(SalesId);
+
+                if(sales == null) {
+
+                    return false;
+                }
+
+                // Getting and verifying the Session Payments Id
+                var service = new SessionService();
+
+                Session session = service.Get(sales.StripeSessionId);
+
+                PaymentIntentService paymentIntentService = new PaymentIntentService();
+
+                PaymentIntent paymentIntent = paymentIntentService.Get(session.PaymentIntentId);
+
+
+
+                if (paymentIntent.Status == "succeeded")
+                {
+                    sales.Status = "Paid";
+                    sales.PaymentIntentId = paymentIntent.Id;
+                    await _dbcontext.SaveChangesAsync();
+
+                    // Sending Email to User ,
+                    var user = await _userservice.GetUserById(sales.CustomerId);
+
+                    if (user == null)
+                    {
+                        return false;
+                    }
+
+                    await _messagebusservice.PublishMessage(user, "purchasemade");
+
+
+                    // Award the User some purchase points .
+                    return true;
+                }
+
+                return false;
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+
+            }
         }
     }
 }

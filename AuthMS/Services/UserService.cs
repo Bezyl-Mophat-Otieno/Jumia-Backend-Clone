@@ -99,7 +99,7 @@ namespace AuthMS.Services
         {
             try {
 
-                var user = await _context.Users.FindAsync(userId);
+                var user = await _context.Users.Where(user=>user.Id == userId.ToString()).FirstOrDefaultAsync();
 
                 var mappeduser = _mapper.Map<UserDTO>(user);
 

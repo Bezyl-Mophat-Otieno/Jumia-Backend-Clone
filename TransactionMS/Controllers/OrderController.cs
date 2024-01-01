@@ -330,6 +330,24 @@ namespace TransactionMS.Controllers
             return Ok(_response);
 
         }
+
+        [HttpPost("validate/{salesId}")]
+
+
+        public async Task<ActionResult<ResponseDTO>> ValidatePayment(Guid salesId)
+        {
+
+            var res = await _saleservice.VerifyPayments(salesId);
+
+            if (!res)
+            {
+                _response.ErrorMessage = "Payment Was'nt made successfully";
+                return StatusCode(500,_response);
+            }
+            _response.Result = res;
+            return Ok(_response);
+
+        }
     }
 
 }

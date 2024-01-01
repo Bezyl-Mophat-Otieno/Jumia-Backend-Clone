@@ -26,6 +26,12 @@ namespace TransactionMS.Models
         
         public string CouponCode { get; set; } = string.Empty;
 
+        public string Status {  get; set; } = string.Empty;
+
+        public string StripeSessionId { get; set; } = string.Empty;
+
+        public string PaymentIntentId {  get; set; } = string.Empty;    
+
         [Required]
         public DateTime ProcessedAT { get; set; } = DateTime.Now;
 

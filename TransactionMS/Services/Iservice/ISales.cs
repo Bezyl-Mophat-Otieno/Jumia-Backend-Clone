@@ -17,6 +17,8 @@ namespace TransactionMS.Services.Iservice
 
         Task<string> ApplyCoupon(string CouponCode);
 
+        Task<bool> VerifyPayments(Guid SalesId);
+
         Task<List<TransactionsDTO>>CustomerTransactionHistory(Guid userId);
     }
 }

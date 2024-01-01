@@ -1,3 +1,4 @@
+using JumiaAzureServiceBus;
 using Microsoft.EntityFrameworkCore;
 using TransactionMS.Data;
 using TransactionMS.Extensions;
@@ -21,12 +22,16 @@ builder.AddAuth();
 // Add HttpClient to aid in the Communication between our external service
 builder.Services.AddHttpClient("Products", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:productMS").Value));
 builder.Services.AddHttpClient("Coupons", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:couponMS").Value));
+builder.Services.AddHttpClient("Users", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:AuthMS").Value));
 builder.Services.AddHttpClient("ProductUpdate", c => c.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceUrls:productMSupdate").Value));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProduct, ProductService>();
 builder.Services.AddScoped<IOrder, OrderService>();
 builder.Services.AddScoped<ISales, SalesService>();
 builder.Services.AddScoped<ICoupon, Couponservice>();
+builder.Services.AddScoped<IUser, Userservice>();
+// Preparing the Referenced Project reference for DI
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 // Stripe Configuration
 
