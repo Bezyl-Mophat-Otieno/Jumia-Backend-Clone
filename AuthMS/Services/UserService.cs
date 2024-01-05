@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AuthMS.Services.Iservice;
 using JumiaAzureServiceBus;
+using AuthMS.SignalR.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace AuthMS.Services
 {
@@ -18,10 +20,11 @@ namespace AuthMS.Services
         private readonly RoleManager<IdentityRole> _rolemanager;
         private readonly IJWT _jwtservice;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<RegistrationHub> _hubcontext;
 
 
         public UserService(ApplicationDBContext context 
-            , IMapper mapper , RoleManager<IdentityRole> rolemanager , UserManager<ApplicationUser> usermanager , IJWT jwtservice, IConfiguration configuration)
+            , IMapper mapper , RoleManager<IdentityRole> rolemanager , UserManager<ApplicationUser> usermanager , IJWT jwtservice, IConfiguration configuration , IHubContext<RegistrationHub> hubcontext)
         {
             _context = context;
                 _mapper = mapper;
@@ -29,6 +32,7 @@ namespace AuthMS.Services
             _usermanager = usermanager;
             _jwtservice = jwtservice;
             _configuration = configuration;
+            _hubcontext = hubcontext;
             
         }
         public async Task<bool> AssignUserRole(AssignRoleDTO assign)
@@ -185,6 +189,10 @@ namespace AuthMS.Services
                     }
 
                     await _usermanager.AddToRoleAsync(User, newuser.Role);
+
+                    // Sending the message to the client 
+
+                    await _hubcontext.Clients.Group("user").SendAsync("OnRegistration", newuser, "User Registered Successfully");
 
                     var publishedmessage = new UserMessageDTO()
                     {
